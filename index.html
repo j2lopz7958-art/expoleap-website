@@ -824,6 +824,16 @@
     color: var(--navy);
     background: rgba(59,91,219,0.07);
   }
+
+  /* FAQ Accordion */
+  #faq { background: var(--page-bg-2); }
+  .faq-list { max-width: 680px; margin: 0 auto; }
+  .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-item summary { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 20px 0; cursor: pointer; font-size: 15px; font-weight: 600; color: var(--navy); line-height: 1.45; list-style: none; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: '+'; font-size: 20px; font-weight: 300; color: var(--brand-blue); flex-shrink: 0; transition: transform 0.2s; margin-top: 1px; }
+  details[open].faq-item summary::after { transform: rotate(45deg); }
+  .faq-a { font-size: 14px; color: var(--text-secondary); line-height: 1.65; padding-bottom: 18px; }
 </style>
 </head>
 <body>
@@ -1019,6 +1029,18 @@
   </div>
 </section>
 
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-inner">
+    <div class="section-header fade-up">
+      <span class="section-eyebrow" id="faq-eyebrow">Have a Question?</span>
+      <h2 class="section-title" id="faq-title">Frequently Asked<br>Questions</h2>
+    </div>
+    <div class="faq-list fade-up" id="faq-accordion"></div>
+  </div>
+</section>
+
 <!-- CTA -->
 <section id="cta">
   <div class="section-inner">
@@ -1071,7 +1093,9 @@
   <div class="footer-bottom">
     <p>© 2026 ExpoLeap Workshops™ LLC · EIN 66-1133450 · LLC Reg. No. 580576 · All rights reserved.</p>
     <div class="footer-legal">
-      <a href="#">ExpoARCH™ and ExpoLeap Workshops™ are registered trademarks.</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="#faq">FAQ</a>
     </div>
   </div>
 </footer>
@@ -1202,6 +1226,50 @@
   let currentLang = 'en';
   let currentActiveIndex = 0;
 
+  const faqs = [
+    {
+      en: { q: 'How do I book a workshop?', a: 'Send an email to expo.leap.workshops@gmail.com or click “Book This Workshop” from any workshop listing. We’ll confirm availability and send a quote based on your needs.' },
+      es: { q: '¿Cómo reservo un taller?', a: 'Envía un correo a expo.leap.workshops@gmail.com o haz clic en “Reservar Este Taller” en cualquier listado. Confirmaremos disponibilidad y te enviaremos una cotización.' }
+    },
+    {
+      en: { q: 'Are workshops available in Spanish?', a: 'Yes. All workshops are available in both English and Spanish. Tell us your preference when booking.' },
+      es: { q: '¿Los talleres están disponibles en español?', a: 'Sí. Todos los talleres están disponibles en inglés y en español. Indícanos tu preferencia al reservar.' }
+    },
+    {
+      en: { q: 'Can the workshop duration be adjusted?', a: 'Absolutely. Every workshop can be scaled between 1 and 8 hours to fit your schedule. We’ll prioritize the most relevant content for the time available.' },
+      es: { q: '¿Se puede ajustar la duración del taller?', a: 'Por supuesto. Cada taller puede ajustarse entre 1 y 8 horas según tu horario. Priorizaremos el contenido más relevante para el tiempo disponible.' }
+    },
+    {
+      en: { q: 'How many participants can attend?', a: 'There’s no strict limit. Workshops are designed to be effective for faculty groups of any size, from small teams to full department gatherings.' },
+      es: { q: '¿Cuántos participantes pueden asistir?', a: 'No hay un límite estricto. Los talleres están diseñados para ser efectivos con grupos de cualquier tamaño, desde pequeños equipos hasta reuniones de departamento completo.' }
+    },
+    {
+      en: { q: 'Are workshops held in person or virtually?', a: 'Primarily in person across Puerto Rico. Virtual sessions can be arranged for off-island institutions with proper notice and planning.' },
+      es: { q: '¿Los talleres son presenciales o virtuales?', a: 'Principalmente presenciales en Puerto Rico. Para instituciones fuera de la isla, se pueden coordinar sesiones virtuales con aviso y planificación adecuados.' }
+    },
+    {
+      en: { q: 'What is the cancellation policy?', a: 'Cancellations 14+ days out: no fee. 7–13 days: 25% fee. 6 days or less: 50% fee. One free reschedule with 7+ days’ notice. See our Terms of Service for full details.' },
+      es: { q: '¿Cuál es la política de cancelación?', a: 'Cancelaciones con 14+ días de antelación: sin cargo. 7–13 días: 25%. 6 días o menos: 50%. Una reprogramación gratuita con 7+ días. Consulta los Términos de Servicio para detalles.' }
+    },
+    {
+      en: { q: 'How is pricing determined?', a: 'Workshop fees are quoted based on duration, topic, group size, and any travel requirements. Contact us to request a quote — pricing is customized to fit your institution.' },
+      es: { q: '¿Cómo se determina el precio?', a: 'Los honorarios se cotizan según la duración, el tema, el tamaño del grupo y los requisitos de viaje. Contáctanos para una cotización — el precio se personaliza para tu institución.' }
+    }
+  ];
+
+  function renderFaq() {
+    const acc = document.getElementById('faq-accordion');
+    if (!acc) return;
+    const ey = document.getElementById('faq-eyebrow');
+    const tt = document.getElementById('faq-title');
+    if (ey) ey.textContent = currentLang === 'es' ? 'Preguntas Frecuentes' : 'Have a Question?';
+    if (tt) tt.innerHTML = currentLang === 'es' ? 'Preguntas<br>Frecuentes' : 'Frequently Asked<br>Questions';
+    acc.innerHTML = faqs.map(f => {
+      const d = f[currentLang];
+      return `<details class="faq-item"><summary>${d.q}</summary><p class="faq-a">${d.a}</p></details>`;
+    }).join('');
+  }
+
   function renderList(activeIndex) {
     list.innerHTML = workshops.map((w, i) => {
       const d = w[currentLang];
@@ -1257,6 +1325,7 @@
   // Initialize with first workshop
   renderList(0);
   renderPanel(0);
+  renderFaq();
 
   // ── COUNTER ANIMATION ──
   // Each counter runs in 300ms, staggered 1000ms apart left to right.
@@ -1522,6 +1591,7 @@
       ? 'Donde los educadores dan el salto. El hogar de Puerto Rico para el desarrollo profesional integrado con IA y la innovaci\u00f3n en investigaci\u00f3n acad\u00e9mica.'
       : "Where educators leap forward. Puerto Rico's home for AI-integrated professional development and academic research innovation.";
 
+    renderFaq();
     // Re-render workshop list and panel in new language
     renderList(currentActiveIndex);
     renderPanel(currentActiveIndex);
